@@ -1,11 +1,13 @@
-import { Label,Button, TextInput, Alert } from "flowbite-react";
+import { Label,Button, TextInput, Alert, Spinner } from "flowbite-react";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
+
 
 export default function SignUp() {
   const [formData,setFormData]=useState({});
-  const [errorMessage,setErrorMessage] = useState({});
-  const [loading,setLoading]=useState(null);
+  const [errorMessage,setErrorMessage] = useState(null);
+  const [loading,setLoading]=useState(false);
+  const navigate=useNavigate();
   const handlClick=(e)=>{
     setFormData({...formData,[e.target.id]:e.target.value.trim()})
     console.log(e.target.value);
@@ -18,6 +20,8 @@ export default function SignUp() {
     }
     console.log(formData);
     try {
+      setLoading(true);
+      setErrorMessage(null);
       const res= await fetch('/api/auth/sign-up',{
         method:'POST',
         headers:{
@@ -27,11 +31,14 @@ export default function SignUp() {
       });
       const data= await res.json();
       if (data.success==false) {
-        return setErrorMessage(data.message)
+        return setErrorMessage("Fill out all the details")
       }
-      
+      setLoading(false);
+      if (res.ok) {
+        navigate("/sign-in");
+      }
     } catch (error) {
-      
+      setErrorMessage(error.message)
     }
   }
   // console.log(formData);
@@ -66,7 +73,15 @@ export default function SignUp() {
               <Label value="Your password" />
               <TextInput type="password" placeholder="password" id="password" onChange={handlClick}  />
             </div>
-            <Button gradientDuoTone='purpleToPink' type="submit">Sign Up</Button>
+            <Button gradientDuoTone='purpleToPink' disabled={loading} type="submit">
+              {loading?(
+                <>
+                <Spinner size='sm'/>
+                <span className="pl-3"> Loading..</span>
+                </>
+              ): 'Sign Up' }
+              
+            </Button>
 
           </form>
           <div className="flex gap-2 text-sm mt-5">
