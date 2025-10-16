@@ -17,7 +17,7 @@ app.listen(3000, () => {
     .connect(process.env.MONGO)
     .then(() => {
       console.log("Mongo db is connected ");
-    });
+    });    
   console.log("server running on port 3000");
 });
 
