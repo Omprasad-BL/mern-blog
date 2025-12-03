@@ -9,7 +9,7 @@ export default function SignIn() {
   const [formData,setFormData]=useState({});
   const {loading,error:errorMessage}=useSelector(state=>state.user);
   const navigate=useNavigate();
-  const dispatch=useDispatch()
+  const dispatch=useDispatch();
   const handlClick=(e)=>{
     setFormData({...formData,[e.target.id]:e.target.value.trim()})
     console.log(e.target.value);
